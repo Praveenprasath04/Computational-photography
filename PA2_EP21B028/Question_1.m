@@ -1,0 +1,63 @@
+image = imread("data/fish.png");
+load("data/gaussNoise.mat")
+imshow(image);
+
+
+[m,n,x] = size(image);
+image =im2double(image);
+%%
+imshow(gaussNoise)
+%%
+total_exp = zeros(m,n+51,3)+im2double(gaussNoise)/255;
+A = zeros(n+51,n);
+for i = 0:51
+    temp_image = zeros(m,n+51,3);
+    temp_image(1:m,i+1:n+i,:) = image(1:m,1:n,:);
+    total_exp = total_exp + temp_image/52 ;
+end
+for i = 1:n
+        A(i:i+51,i) = ones(1,52);
+end
+blurred_image = total_exp  ;
+imshow(blurred_image)
+%%
+imshow(A)
+%%
+size(blurred_image)
+size(pinv(A'))
+m,n
+%%
+deblured = zeros(m,n,3);
+for c =1:3
+  blurred_row=blurred_image(:,:,c);
+  size(blurred_row)
+        size(pinv(A))
+        sol=blurred_row*pinv(A'/52);
+        deblured(:,:,c) = sol ;
+end
+imshow(deblured)
+
+%%
+figure
+tiledlayout(3,1)
+nexttile
+imshow(blurred_image)
+title("Peppers")
+
+nexttile
+imshow(deblured)
+title("Pears")
+
+nexttile
+imshow(image)
+title("Peppers")
+
+
+
+
+%%
+
+Norm = norm(A)*norm(A')
+
+
+
